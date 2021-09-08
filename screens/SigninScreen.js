@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
-
-const AuthContext = React.createContext();
+import {AuthContext} from '../App';
 
 export default function SignInScreen() {
     const [username, onChangeUsername] = React.useState(null);

@@ -36,8 +36,8 @@ import SignInScreen from './screens/SigninScreen';
 import SplashScreen from './screens/SplashScreen';
 // import ProfileScreen from './screens/ProfileScreen';
 
-const AuthContext = React.createContext();
-const api_url = 'http://localhost:4000';
+export const AuthContext = React.createContext();
+const api_url = 'http://192.168.1.112:4000';
 const Stack = createStackNavigator();
 
 export default function App({ navigation }) {
@@ -78,15 +78,19 @@ export default function App({ navigation }) {
 
       try {
         userToken = await SecureStore.getItemAsync('token');
+        console.log(`Logging in, have token ${userToken}`);
+        //TODO: Check if token valid
+        dispatch({ type: 'RESTORE_TOKEN', token: userToken });
       } catch (e) {
         // Restoring token failed
+        dispatch(addError(e.message));
       }
 
       // After restoring token, we may need to validate it in production apps
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      
     };
 
     bootstrapAsync();
@@ -95,11 +99,11 @@ export default function App({ navigation }) {
   const authContext = React.useMemo(
     () => ({
       signIn: async (data) => {
-        console.log(`Trying to sign in to ${api_url}/users/authenticate with ${username} and ${password}`)
+        console.log(`Trying to sign in to ${api_url}/users/authenticate with username: ${data.username} and password: ${data.password}`)
         axios.post(`${api_url}/users/authenticate`, { username: data.username, password: data.password})
         .then(function (response) {
-            console.log(response);
             let token = response.data.token;
+            console.log(token);
             // Do we have to check content of response here?
             SecureStore.setItemAsync('token', token);
             // Backend token set to expier after 7 days
@@ -108,8 +112,26 @@ export default function App({ navigation }) {
             dispatch({ type: 'SIGN_IN', token: token });
         })
         .catch(function (error) {
-            console.log(error);
-        })
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log('*** Response Error ***');
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            console.log('*** Request Error ***');
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('*** Other Axios Error ***');
+            console.log('Error', error.message);
+          }
+          console.log(error.config);
+        });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
