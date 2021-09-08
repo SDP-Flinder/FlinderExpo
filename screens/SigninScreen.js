@@ -1,30 +1,12 @@
 import React from 'react';
-import axios from 'axios';
-import Config from 'react-native-config';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
-const api_url = 'http://localhost:4000';
+
+const AuthContext = React.createContext();
 
 export default function SignInScreen() {
     const [username, onChangeUsername] = React.useState(null);
     const [password, onChangePassword] = React.useState(null);
-    const [attempts, setAttempt] = React.useState(0);
-
-    function signin() {
-        console.log(`Trying to sign in to ${api_url}/users/authenticate with ${username} and ${password}`)
-        axios.post(`${api_url}/users/authenticate`, { username: username, password: password})
-        .then(function (response) {
-            console.log(response);
-            // Check content of response
-            SecureStore.setItemAsync('token', response.data.token);
-            // Backend token set to expier after 7 days
-            SecureStore.setItemAsync('token-expiration', Date.now + 7);
-            setAttempt(attempts + 1);
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-    };
+    const { signIn } = React.useContext(AuthContext);
 
     return (
         <View style={styles.container}> 
@@ -45,7 +27,7 @@ export default function SignInScreen() {
                 secureTextEntry
             />
             <Button 
-                onPress={() => signin()}  
+                onPress={() => signIn({ username, password })}  
                 title="Sign In"
             />
         </View>
