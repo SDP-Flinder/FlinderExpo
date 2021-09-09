@@ -1,35 +1,46 @@
 import React from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import {AuthContext} from '../App';
+import FlateeSignUpForm from '../components/FlateeSignUpForm';
+import FlatSignUpForm from '../components/FlatSignUpForm';
+import { Role } from '../components/role';
+import SignUpForm from '../components/SignUpForm';
+import RadioForm from 'react-native-simple-radio-button';
 
-export default function SignUpScreen() {
-    const [username, onChangeUsername] = React.useState(null);
-    const [password, onChangePassword] = React.useState(null);
-    const { signIn } = React.useContext(AuthContext);
+export default function SignUpScreen({ navigation }) {
+    const [formData, setFormData] = React.useState(null);
+    const [flatFormData, setFlatFormData] = React.useState(null);
+    const [flateeFormData, setFlateeFormData] = React.useState(null);
+    const [accountType, onChangeType] = React.useState(Role.Flatee);
+
+    const { signUp } = React.useContext(AuthContext);
 
     return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}> 
-            <Text style={styles.title}>Sign Up</Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={onChangeUsername}
-                value={username}
-                autoCapitalize='none'
-                placeholder="Username" 
+            <SignUpForm setFormData={setFormData} />
+            <RadioForm // https://www.npmjs.com/package/react-native-simple-radio-button
+              radio_props={[{label: 'I\'m looking for a Flat', value: 'flatee' }, {label: 'I\'m looking for a Flatmate', value: 'flat' }]}
+              initial={'flatee'}
+              onPress={(value) => {onChangeType(value)}}
             />
-            <TextInput
-                style={styles.input}
-                onChangeText={onChangePassword}
-                value={password}
-                autoCapitalize='none'
-                placeholder="Password"
-                secureTextEntry
-            />
+            {accountType == Role.Flatee ? 
+              // Display Flatee Form
+              <FlateeSignUpForm setFlateeFormData={setFlateeFormData} /> : 
+              // Or else you want to be a Flat
+              <FlatSignUpForm setFlatFormData={setFlatFormData} />}
             <Button 
-                onPress={() => signIn({ username, password })}  
-                title="Sign In"
+                onPress={() => signUp({})}  
+                title="Sign Up"
+            />  
+            <Button      
+              title="Sign In"     
+              onPress={() =>        
+                navigation.navigate('SignIn')      
+              }    
             />
         </View>
+        </TouchableWithoutFeedback>
     );
 }
 

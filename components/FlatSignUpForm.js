@@ -1,10 +1,14 @@
+
+// Address, 
+
 import React from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import {AuthContext} from '../App';
 import { Formik } from "formik";
 import * as EmailValidator from "email-validator"; // used when validating with a self-implemented approach
-import * as Yup from "yup"; // used when validating with a pre-built solution
+import * as yup from "yup"; // used when validating with a pre-built solution
 
-export default function FlatSignUpForm({ setFlateeFormData }) {
+export default function FlatSignUpForm({ setFlatFormData }) {
 
     return (
         <> 

@@ -1,36 +1,44 @@
 import React from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { View, Button, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import {AuthContext} from '../App';
 
-export default function SignInScreen() {
+export default function SignInScreen({ navigation }) {
     const [username, onChangeUsername] = React.useState(null);
     const [password, onChangePassword] = React.useState(null);
     const { signIn } = React.useContext(AuthContext);
 
     return (
-        <View style={styles.container}> 
-            <Text style={styles.title}>Sign In</Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={onChangeUsername}
-                value={username}
-                autoCapitalize='none'
-                placeholder="Username" 
-            />
-            <TextInput
-                style={styles.input}
-                onChangeText={onChangePassword}
-                value={password}
-                autoCapitalize='none'
-                placeholder="Password"
-                secureTextEntry
-            />
-            <Button 
-                onPress={() => signIn({ username, password })}  
-                title="Sign In"
-            />
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <TextInput
+            style={styles.input}
+            onChangeText={onChangeUsername}
+            value={username}
+            autoCapitalize='none'
+            placeholder="Username" 
+        />
+        <TextInput
+            style={styles.input}
+            onChangeText={onChangePassword}
+            value={password}
+            autoCapitalize='none'
+            placeholder="Password"
+            secureTextEntry
+        />
+        <Button 
+            onPress={() => signIn({ username, password })}  
+            title="Sign In"
+        />
+        <Button      
+          title="Sign Up"     
+          onPress={() =>        
+            navigation.navigate('SignUp')      
+          }    
+        />
+      </View>
+      </TouchableWithoutFeedback>
     );
+    
 }
 
 const styles = StyleSheet.create({
@@ -51,3 +59,20 @@ const styles = StyleSheet.create({
     padding: 10,
   }
 });
+// const {
+//   values,
+//   touched,
+//   errors,
+//   isSubmitting,
+//   handleChange,
+//   handleBlur,
+//   handleSubmit
+// } = props;const {
+//             values,
+//             touched,
+//             errors,
+//             isSubmitting,
+//             handleChange,
+//             handleBlur,
+//             handleSubmit
+//           } = props;
