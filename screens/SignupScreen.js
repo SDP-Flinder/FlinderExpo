@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView } from 'react-native';
 import {AuthContext} from '../App';
 import FlateeSignUpForm from '../components/FlateeSignUpForm';
 import FlatSignUpForm from '../components/FlatSignUpForm';
@@ -17,9 +17,10 @@ export default function SignUpScreen({ navigation }) {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}> 
+        <SafeAreaView style={styles.container}>
+          <ScrollView> 
             <SignUpForm setFormData={setFormData} />
-            <RadioForm // https://www.npmjs.com/package/react-native-simple-radio-button
+            {/* <RadioForm // https://www.npmjs.com/package/react-native-simple-radio-button
               radio_props={[{label: 'I\'m looking for a Flat', value: 'flatee' }, {label: 'I\'m looking for a Flatmate', value: 'flat' }]}
               initial={'flatee'}
               onPress={(value) => {onChangeType(value)}}
@@ -28,7 +29,7 @@ export default function SignUpScreen({ navigation }) {
               // Display Flatee Form
               <FlateeSignUpForm setFlateeFormData={setFlateeFormData} /> : 
               // Or else you want to be a Flat
-              <FlatSignUpForm setFlatFormData={setFlatFormData} />}
+              <FlatSignUpForm setFlatFormData={setFlatFormData} />} */}
             <Button 
                 onPress={() => signUp({})}  
                 title="Sign Up"
@@ -39,7 +40,8 @@ export default function SignUpScreen({ navigation }) {
                 navigation.navigate('SignIn')      
               }    
             />
-        </View>
+        </ScrollView>
+        </SafeAreaView>
         </TouchableWithoutFeedback>
     );
 }
